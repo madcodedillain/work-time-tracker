@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
+
+function formatTime(totalSeconds: number) 
+{
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = totalSeconds % 60;
+
+  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+}
+
 function App() {
 
-  const [seconds, setSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(58);
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
@@ -52,7 +61,7 @@ function App() {
   Reset
 </button>
 
-<p>Time: {seconds} seconds</p>
+<p>Time: {formatTime(seconds)}</p>
 <p>Timer status: {isRunning ? 'Running' : 'Stopped'}</p>
 
     </main>
