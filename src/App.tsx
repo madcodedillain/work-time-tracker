@@ -13,8 +13,8 @@ function App() {
   const [startTime, setStartTime] = useState<Date | null>(null);
 
   const [sessions, setSessions] = useState<
-    { startTime: Date; duration: number }[]
-  >([]);
+  { id: string; startTime: Date; duration: number }[]
+>([]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -80,6 +80,7 @@ function App() {
           setSessions((currentSessions) => [
             ...currentSessions,
             {
+              id: crypto.randomUUID(),
               startTime,
               duration: seconds,
             },
@@ -111,14 +112,28 @@ function App() {
         <p>No sessions yet.</p>
       ) : (
         <ul>
-          {sessions.map((session, index) => (
-            <li key={index}>
+          {sessions.map((session) => (
+            <li key={session.id}>
               {session.startTime.toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
               {' — '}
               {formatTime(session.duration)}
+
+              <button
+  type="button"
+  onClick={() => {
+    setSessions((currentSessions) =>
+      currentSessions.filter(
+        (currentSession) => currentSession.id !== session.id
+      )
+    );
+  }}
+>
+  Delete
+</button>
+
             </li>
           ))}
         </ul>
