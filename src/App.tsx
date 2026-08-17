@@ -13,8 +13,32 @@ function App() {
   const [startTime, setStartTime] = useState<Date | null>(null);
 
   const [sessions, setSessions] = useState<
-  { id: string; startTime: Date; duration: number }[]
->([]);
+  {
+    id: string;
+    startTime: Date;
+    endTime: Date;
+    duration: number;
+  }[]
+>(() => {
+  const savedSessions = localStorage.getItem('sessions');
+
+  if (savedSessions === null) {
+    return [];
+  }
+
+  const parsedSessions = JSON.parse(savedSessions);
+
+  return parsedSessions.map((session: {
+    id: string;
+    startTime: string;
+    endTime: string;
+    duration: number;
+  }) => ({
+    ...session,
+    startTime: new Date(session.startTime),
+    endTime: new Date(session.endTime),
+  }));
+});
 
   useEffect(() => {
     if (!isRunning) {
@@ -29,6 +53,10 @@ function App() {
       window.clearInterval(intervalId);
     };
   }, [isRunning]);
+
+  useEffect(() => {
+  localStorage.setItem('sessions', JSON.stringify(sessions));
+}, [sessions]);
 
   return (
     <main>
@@ -82,6 +110,7 @@ function App() {
             {
               id: crypto.randomUUID(),
               startTime,
+              endTime: new Date(),
               duration: seconds,
             },
           ]);
